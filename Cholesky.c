@@ -1,0 +1,99 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+
+int main(){
+    int **M=NULL,**l=NULL,**p=NULL;
+    int n,i,j;
+    do{
+        printf("Insert the dimnsion of the matrix:");
+        scanf("%d",&n);
+    }while(n<=0);
+    p=(int**)malloc(n*sizeof(int*));
+    M=(int**)malloc(n*sizeof(int*));
+    l=(int**)malloc(n*sizeof(int*));
+    for(i=0;i<n;i++){
+        M[i]=(int*)malloc(n*sizeof(int));
+        l[i]=(int*)malloc(n*sizeof(int));
+        p[i]=(int*)malloc(n*sizeof(int));
+    }
+    if(M==NULL || l==NULL){
+        printf("Erreur: memory allocation");
+        exit(0);
+    }
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            printf("M[%d][%d]",i,j);
+            scanf("%d",&M[i][j]);
+        }
+    }
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            if(M[i][j]!=M[j][i]){
+                printf("The matrix is not a symmetrcal matrix\nThe cholesky method is not applicable\n");
+                exit(0);
+            }
+        }
+    }
+    printf("M=\n");
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            printf("%d\t",M[i][j]);
+        }
+        printf("\n");
+    }
+    for(i=0;i<n;i++){
+        for(j=i+1;j<n;j++){
+            l[i][j]=0;
+        }
+    }
+    int alpha,k;
+    for(i=0;i<n;i++){
+        for(j=0;j<=i;j++){
+            if(i==j){
+                alpha=0;
+                for(k=0;k<i;k++){
+                    alpha+=l[i][k]*l[i][k];
+                }
+                l[i][i]=sqrt(M[i][i]-alpha);
+            }
+            else{
+                alpha=0;
+                for(k=0;k<i;k++){
+                    alpha+=l[i][k]*l[j][k];
+                }
+                l[i][j]=(M[i][j]-alpha)/l[j][j];
+            }
+        }
+    }
+    printf("L=\n");
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            printf("%d\t",l[i][j]);
+        }
+        printf("\n");
+    }
+    printf("L^t=\n");
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            printf("%d\t",l[j][i]);
+        }
+        printf("\n");
+    }
+    printf("L*L^t=\n");
+    alpha=0;
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            p[i][j]=0;
+            for(k=0;k<n;k++){
+                p[i][j]+=l[i][k]*l[j][k];
+            }           
+        }
+    }
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            printf("%d\t",p[j][i]);
+        }
+        printf("\n");
+    }
+}
